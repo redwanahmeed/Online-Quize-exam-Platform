@@ -8,7 +8,7 @@ class AnnouncementController {
         $this->announcementModel = new AnnouncementModel();
     }
     
-    // Admin: সব announcement দেখানো
+  
     public function index() {
         requireRole('admin');
         
@@ -24,7 +24,6 @@ class AnnouncementController {
         include __DIR__ . '/../views/announcements/index.php';
     }
     
-    // User: announcement দেখানো (Dashboard এর জন্য)
     public function getUserAnnouncements() {
         requireAuth();
         
@@ -41,7 +40,7 @@ class AnnouncementController {
         exit();
     }
     
-    // Announcement details view
+
     public function view() {
         requireAuth();
         
@@ -59,7 +58,7 @@ class AnnouncementController {
         include __DIR__ . '/../views/announcements/view.php';
     }
     
-    // New announcement create form and submit
+   
     public function create() {
         requireRole('admin');
         
@@ -95,7 +94,7 @@ class AnnouncementController {
         include __DIR__ . '/../views/announcements/create.php';
     }
     
-    // Edit announcement
+  
     public function edit() {
         requireRole('admin');
         
@@ -132,7 +131,7 @@ class AnnouncementController {
         include __DIR__ . '/../views/announcements/edit.php';
     }
     
-    // Delete announcement
+  
     public function delete() {
         requireRole('admin');
         
@@ -147,7 +146,7 @@ class AnnouncementController {
         }
     }
     
-    // Update announcement status (AJAX)
+  
     public function updateStatus() {
         requireRole('admin');
         
@@ -173,7 +172,6 @@ class AnnouncementController {
         }
     }
     
-    // Search announcements (AJAX)
     public function search() {
         requireRole('admin');
         
@@ -196,7 +194,7 @@ class AnnouncementController {
         exit();
     }
     
-    // Mark announcement as read (AJAX)
+    
     public function markAsRead() {
         requireAuth();
         
@@ -215,7 +213,7 @@ class AnnouncementController {
         }
     }
     
-    // Get unread count for dashboard (AJAX)
+    
     public function getUnreadCount() {
         requireAuth();
         

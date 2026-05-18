@@ -1,17 +1,17 @@
 <?php
 session_start();
 
-// Database configuration
+
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'school_db');
 
-// Site configuration
+
 define('SITE_NAME', 'Student Management System');
 define('SITE_URL', 'http://localhost/school-management/');
 
-// Error reporting (turn off in production)
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -19,34 +19,33 @@ ini_set('display_errors', 1);
 function getDB() {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     
-    // Check connection
+  
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
     
-    // Set charset to UTF-8
+  
     $conn->set_charset("utf8");
     
     return $conn;
 }
 
-// Check if user is logged in
 function isLoggedIn() {
     return isset($_SESSION['user_id']);
 }
 
-// Check user role - Support for 4 roles
+
 function hasRole($role) {
     return isset($_SESSION['role']) && $_SESSION['role'] == $role;
 }
 
-// Check if user has any of the allowed roles
+
 function hasAnyRole($roles) {
     if (!isset($_SESSION['role'])) return false;
     return in_array($_SESSION['role'], $roles);
 }
 
-// Redirect if not authenticated
+
 function requireAuth() {
     if (!isLoggedIn()) {
         header('Location: ' . SITE_URL . 'index.php?page=login');
@@ -54,7 +53,6 @@ function requireAuth() {
     }
 }
 
-// Redirect if role doesn't match
 function requireRole($role) {
     requireAuth();
     if (!hasRole($role)) {
@@ -63,7 +61,7 @@ function requireRole($role) {
     }
 }
 
-// Require any of the allowed roles
+
 function requireAnyRole($roles) {
     requireAuth();
     if (!hasAnyRole($roles)) {
@@ -72,7 +70,7 @@ function requireAnyRole($roles) {
     }
 }
 
-// Sanitize input
+
 function sanitize($input) {
     if (is_array($input)) {
         return array_map('sanitize', $input);
@@ -80,7 +78,7 @@ function sanitize($input) {
     return htmlspecialchars(strip_tags(trim($input)), ENT_QUOTES, 'UTF-8');
 }
 
-// Get role display name
+
 function getRoleDisplayName($role) {
     $roles = [
         'admin' => 'Administrator',
@@ -91,27 +89,27 @@ function getRoleDisplayName($role) {
     return $roles[$role] ?? ucfirst($role);
 }
 
-// Check if user can manage students
+
 function canManageStudents() {
     return hasRole('admin');
 }
 
-// Check if user can view students
+
 function canViewStudents() {
     return hasAnyRole(['admin', 'instructor', 'teaching_assistant']);
 }
 
-// Check if user can manage courses
+
 function canManageCourses() {
     return hasRole('admin');
 }
 
-// Check if user can manage users
+
 function canManageUsers() {
     return hasRole('admin');
 }
 
-// Redirect based on role after login
+
 function redirectBasedOnRole() {
     $role = $_SESSION['role'];
     
@@ -135,7 +133,7 @@ function redirectBasedOnRole() {
     exit();
 }
 
-// Generate CSRF token
+
 function generateCSRFToken() {
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -143,12 +141,12 @@ function generateCSRFToken() {
     return $_SESSION['csrf_token'];
 }
 
-// Verify CSRF token
+/
 function verifyCSRFToken($token) {
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
 
-// Get user IP address
+
 function getUserIP() {
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         return $_SERVER['HTTP_CLIENT_IP'];
@@ -159,7 +157,7 @@ function getUserIP() {
     }
 }
 
-// Log user activity
+
 function logActivity($user_id, $action) {
     $conn = getDB();
     $ip = getUserIP();
@@ -170,7 +168,7 @@ function logActivity($user_id, $action) {
     $conn->close();
 }
 
-// Check if email exists
+
 function emailExists($email) {
     $conn = getDB();
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
@@ -183,7 +181,7 @@ function emailExists($email) {
     return $exists;
 }
 
-// Check if username exists
+
 function usernameExists($username) {
     $conn = getDB();
     $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
@@ -196,24 +194,24 @@ function usernameExists($username) {
     return $exists;
 }
 
-// Get total counts for dashboard
+
 function getTotalCounts() {
     $conn = getDB();
     $counts = [];
     
-    // Total students
+   
     $result = $conn->query("SELECT COUNT(*) as total FROM students");
     $counts['students'] = $result->fetch_assoc()['total'];
     
-    // Total courses
+   
     $result = $conn->query("SELECT COUNT(*) as total FROM courses");
     $counts['courses'] = $result->fetch_assoc()['total'];
     
-    // Total users
+  
     $result = $conn->query("SELECT COUNT(*) as total FROM users");
     $counts['users'] = $result->fetch_assoc()['total'];
     
-    // Total enrollments
+  
     $result = $conn->query("SELECT COUNT(*) as total FROM enrollments");
     $counts['enrollments'] = $result->fetch_assoc()['total'];
     
@@ -221,52 +219,51 @@ function getTotalCounts() {
     return $counts;
 }
 
-// Format date
+
 function formatDate($date, $format = 'F d, Y') {
     return date($format, strtotime($date));
 }
 
-// Redirect with message
+
 function redirectWithMessage($url, $message, $type = 'success') {
     header("Location: $url&{$type}=" . urlencode($message));
     exit();
 }
 
-// Upload file function
+
 function uploadFile($file, $target_dir, $allowed_types = ['jpg', 'jpeg', 'png', 'gif']) {
     $filename = $file['name'];
     $tmp_name = $file['tmp_name'];
     $error = $file['error'];
     $size = $file['size'];
     
-    // Check for errors
+
     if ($error !== UPLOAD_ERR_OK) {
         return ['success' => false, 'message' => 'Upload failed'];
     }
     
-    // Check file size (max 2MB)
+
     if ($size > 2 * 1024 * 1024) {
         return ['success' => false, 'message' => 'File too large (max 2MB)'];
     }
     
-    // Get file extension
+   
     $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
     
-    // Check file type
+
     if (!in_array($ext, $allowed_types)) {
         return ['success' => false, 'message' => 'Invalid file type'];
     }
     
-    // Generate unique filename
+  
     $new_filename = uniqid() . '_' . time() . '.' . $ext;
     $target_file = $target_dir . $new_filename;
     
-    // Create directory if not exists
+    
     if (!file_exists($target_dir)) {
         mkdir($target_dir, 0777, true);
     }
-    
-    // Move uploaded file
+
     if (move_uploaded_file($tmp_name, $target_file)) {
         return ['success' => true, 'filename' => $new_filename];
     } else {

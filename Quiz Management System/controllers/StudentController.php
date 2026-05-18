@@ -11,7 +11,7 @@ class StudentController {
         $this->userModel = new UserModel();
     }
     
-    // Index method - শুধু একবার থাকবে
+   
     public function index() {
         if (!hasRole('admin')) {
             header('Location: index.php?page=dashboard&error=Access Denied');
@@ -23,7 +23,7 @@ class StudentController {
         $year = $_GET['year'] ?? 'all';
         $status = $_GET['status'] ?? 'all';
         
-        // Get filtered students
+      
         $students = $this->studentModel->getFilteredStudents($course, $year, $status);
         $stats = $this->studentModel->getStats();
         

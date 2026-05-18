@@ -4,7 +4,7 @@ require_once __DIR__ . '/../models/UserModel.php';
 
 header('Content-Type: application/json');
 
-// Check if user is logged in and is admin
+
 if (!isLoggedIn()) {
     echo json_encode(['status' => 'error', 'message' => 'Unauthorized - Please login']);
     exit();
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     $userModel = new UserModel();
     
-    // Don't allow changing own role
+  
     if ($user_id == $_SESSION['user_id']) {
         echo json_encode(['status' => 'error', 'message' => 'You cannot change your own role']);
         exit();

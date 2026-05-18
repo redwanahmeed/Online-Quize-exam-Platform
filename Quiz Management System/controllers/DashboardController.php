@@ -20,7 +20,7 @@ class DashboardController {
         $role = $_SESSION['role'];
         
         if ($role == 'admin') {
-            // Get all statistics for admin dashboard
+           
             $userCounts = $this->dashboardModel->getUserCounts();
             $activeCourses = $this->dashboardModel->getActiveCoursesCount();
             $todayQuizAttempts = $this->dashboardModel->getTodayQuizAttempts();
@@ -33,7 +33,7 @@ class DashboardController {
             
             include __DIR__ . '/../views/dashboard/admin.php';
         } else {
-            // For other roles (instructor, ta, student)
+            
             $userCounts = $this->dashboardModel->getUserCounts();
             $activeCourses = $this->dashboardModel->getActiveCoursesCount();
             include __DIR__ . '/../views/dashboard/index.php';
