@@ -141,7 +141,7 @@ function generateCSRFToken() {
     return $_SESSION['csrf_token'];
 }
 
-/
+
 function verifyCSRFToken($token) {
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
